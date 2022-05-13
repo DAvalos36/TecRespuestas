@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+</head>
+
+<body style="background-color: #f4f5f9;">
+
+    <%- include('../partials/navbar') %> 
+
+    <div class="container px-sm-0">
+<!-- Publicacion -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card text-center rounded-0 my-3">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Titulo pregunta! <!-- A --></h5>
+                    </div>
+                    <div class="card-body pt-2">
+                        <span class="badge rounded-pill bg-info mb-2">David Octavio Avalos Loya <!-- AQUI IRA el nombre de la persona--> </span>
+                        <div class="card-text">
+                            <!-- AQUI SE PONDRA EL TEXTO -->
+                            <p>Aqui se dira la pregunta y se daran datos sobre ella.</p>
+                            <p><span class="ql-size-huge">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum, hic praesentium. Velit id unde nisi veniam enim consequatur suscipit facilis fugit obcaecati. Ab deserunt alias similique nobis laudantium iusto recusandae. Delectus architecto, sapiente a atque voluptas non impedit maiores eius, magnam nam voluptatum ratione soluta aliquam recusandae ipsam perferendis? Sapiente sint natus deleniti corporis dolorem consectetur distinctio fuga voluptatum cum! Voluptatem, fugit aperiam! Quia aspernatur ullam autem repellendus. Laborum, aspernatur officiis? Nisi iste, iure asperiores atque provident esse placeat culpa, vero nobis in facere aperiam dolore ipsam harum, qui rerum?!</span></p><p>Some initial <strong>bold</strong> text</p><p><br></p>
+                        </div>
+
+                        <!-- <a href="#" class="btn btn-primary">Button</a> -->
+                    </div>
+                    <div class="card-footer text-muted">FECHA</div>
+                </div>
+            </div>
+        </div>
+        <!--  -->
+        <div class="responder my-3 p-3">
+            <% if (sesion.usid !== undefined) { %>
+                <div class="row">
+                    <div class="col-12 col-lg-8">
+                        <input type="text" name="respuesta" id="" class="form-control form-control-lg w-100" placeholder="Escribe tu respuesta aqui">
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <button class="w-100 btn btn-warning mt-lg-2 ml-l-0">Enviar!</button>
+                    </div>
+                </div>
+            <% } else { %>
+                <%- include('../partials/alertaInicioSesion', {mensaje: "¡No puede responder sin iniciar sesion!"}) %>
+            <% } %>
+            
+        </div>
+
+        <h2 class="text-start">Respuestas:</h2>
+        <!--  -->
+        <% if (id > 0) { %>
+            <% for( let index = 0; index < id; index++ ) { %>
+                <%- include('../partials/comentarios', {sesion}) %> 
+            <% } %>
+        <% } else { %>
+                <h2>No hay nada</h2>
+            
+        <% } %>
+        
+      </div>
+</body>
+
+</html>

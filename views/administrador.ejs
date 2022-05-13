@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css" rel="stylesheet" />
+
+</head>
+
+<body style="background-color: #f4f5f9;">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.11.0/mdb.min.js"></script>
+    
+    <%- include('../partials/navbar') %> 
+    <div class="container px-sm-0" >
+        <% for( let index = 0; index < 88; index++ ) { %>
+            
+        
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item my-2">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-mdb-toggle="collapse"
+                  data-mdb-target="#panelsStayOpen-collapseOne<%-index%> " aria-expanded="true" aria-controls="panelsStayOpen-collapseOne<%-index%>">
+                  <div class="row">
+                      <div class="col-12">
+                            Titulo
+                      </div>
+                  </div>
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseOne<%-index%>" class="accordion-collapse collapse" aria-labelledby="headingOne">
+                <div class="accordion-body">
+                  Texto de pregunta!
+
+                  <div class="row">
+                      <div class="col-12 text-center">
+                        <span class="badge rounded-pill bg-info mb-3">David Octavio Avalos Loya</span>
+                      </div>
+                      <div class="col-12 text-center">
+                        <button class="btn border border-success">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                        <button class="btn border border-warning">
+                            <i class="fas fa-minus-circle"></i>
+                        </button>
+                        <button class="btn border border-danger">
+                            <i class="fas fa-ban"></i>
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</body>
+
+</html>
