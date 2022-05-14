@@ -12,7 +12,7 @@ const iniciar = (e, f) => {
         data.pass = f[1].value;
     
         axios.post(f.action, data, {withCredentials: true }).then(r => {
-            Notiflix.Loading.pulse("Cargando...", {svgColor: "#FFA900"});
+            Notiflix.Loading.pulse("Cargando...", {svgColor: "#1266F1"});
             
             console.log(r)
             if(r.status == 200){
@@ -43,7 +43,7 @@ const crear = (e,f) =>{
     }
     else {
         axios.post(f.action, data, { withCredentials: true }).then(r => {
-            Notiflix.Loading.pulse("Cargando...", {svgColor: "#FFA900"});
+            Notiflix.Loading.pulse("Cargando...", {svgColor: "#1266F1"});
             console.log(r)
             if(r.status == 200){
                 Notiflix.Loading.remove();
