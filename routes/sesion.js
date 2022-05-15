@@ -66,7 +66,15 @@ router.post('/crear', validator.body(esquemaRegistro),(req, res) => {
         conn.query('INSERT INTO usuarios VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [null,req.body.nombre, req.body.apellido, req.body.correo, hash, 1, 1, null]).then(r => {
           res.json({msj: "Todo bien"});
           console.log(r);
-        });
+        }).catch(err => {
+          console.log(err);
+          if (err.code == 'ER_DUP_ENTRY'){
+            res.status(409).json({tipo: "error", msj:"Este usuario ya existe!"});
+          }
+          else{
+            res.status(400).json(err);
+          }
+        })
         conn.end();
       }).catch(err => {
         console.log(err);

@@ -52,7 +52,12 @@ const crear = (e,f) =>{
             }
         }).catch(err => {
             const respuesta = err.response;
-            if (respuesta.status == 400){ 
+            if (respuesta.status == 409){
+                Notiflix.Loading.remove()
+                Notiflix.Report.failure("Error al registrarse", '¡Este correo ya se encuentra registrado!', "Ok");
+            } 
+               
+            else if(respuesta.status == 400){ 
                 Notiflix.Loading.remove()
                 Notiflix.Notify.failure('Algo salio mal...');
             }
