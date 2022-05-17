@@ -3,6 +3,7 @@ const Joi = require("joi");
 const validator = require('express-joi-validation').createValidator({});
 let pool  =  require('../db/config.js');
 const bcrypt = require('bcrypt');
+const { date } = require('joi');
 var router = express.Router();
 
 const rounds = 10;
@@ -61,9 +62,9 @@ router.post('/iniciar', validator.body(esquemaLogin),function(req, res, next) {
 router.post('/crear', validator.body(esquemaRegistro),(req, res) => {
     console.log(req.body);
     bcrypt.hash(req.body.pass,rounds).then(hash => {
-      console.log(hash);
       pool.getConnection().then(conn => {
-        conn.query('INSERT INTO usuarios VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [null,req.body.nombre, req.body.apellido, req.body.correo, hash, 1, 1, null]).then(r => {
+        let fecha = Date.now();
+        conn.query('INSERT INTO usuarios VALUES (?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(? / 1000))', [null,req.body.nombre, req.body.apellido, req.body.correo, hash, 1, 1, fecha.toString()]).then(r => {
           res.json({msj: "Todo bien"});
           console.log(r);
         }).catch(err => {
@@ -78,7 +79,7 @@ router.post('/crear', validator.body(esquemaRegistro),(req, res) => {
         conn.end();
       }).catch(err => {
         console.log(err);
-        res.status(500).json({msj: "Hubo un error con la base de datos!!"});
+        res.status(500).json({msj: "Hubo un error con la base de datos!!", error: err});
       })
     });
 });
