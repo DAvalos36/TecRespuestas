@@ -28,19 +28,20 @@
             <div class="col-12">
                 <div class="card text-center rounded-0 my-3">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Titulo pregunta! <!-- A --></h5>
+                        <h5 class="card-title mb-0"><%= pregunta.titulo %>  <!-- A --></h5>
                     </div>
                     <div class="card-body pt-2">
-                        <span class="badge rounded-pill bg-info mb-2">David Octavio Avalos Loya <!-- AQUI IRA el nombre de la persona--> </span>
+                        <span class="badge rounded-pill bg-info mb-2"><%= pregunta.nombre %>  <!-- AQUI IRA el nombre de la persona--> </span>
                         <div class="card-text">
                             <!-- AQUI SE PONDRA EL TEXTO -->
-                            <p>Aqui se dira la pregunta y se daran datos sobre ella.</p>
-                            <p><span class="ql-size-huge">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum, hic praesentium. Velit id unde nisi veniam enim consequatur suscipit facilis fugit obcaecati. Ab deserunt alias similique nobis laudantium iusto recusandae. Delectus architecto, sapiente a atque voluptas non impedit maiores eius, magnam nam voluptatum ratione soluta aliquam recusandae ipsam perferendis? Sapiente sint natus deleniti corporis dolorem consectetur distinctio fuga voluptatum cum! Voluptatem, fugit aperiam! Quia aspernatur ullam autem repellendus. Laborum, aspernatur officiis? Nisi iste, iure asperiores atque provident esse placeat culpa, vero nobis in facere aperiam dolore ipsam harum, qui rerum?!</span></p><p>Some initial <strong>bold</strong> text</p><p><br></p>
+                            <%- pregunta.contenido %> 
+                            <!-- <p>Aqui se dira la pregunta y se daran datos sobre ella.</p>
+                            <p><span class="ql-size-huge">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum, hic praesentium. Velit id unde nisi veniam enim consequatur suscipit facilis fugit obcaecati. Ab deserunt alias similique nobis laudantium iusto recusandae. Delectus architecto, sapiente a atque voluptas non impedit maiores eius, magnam nam voluptatum ratione soluta aliquam recusandae ipsam perferendis? Sapiente sint natus deleniti corporis dolorem consectetur distinctio fuga voluptatum cum! Voluptatem, fugit aperiam! Quia aspernatur ullam autem repellendus. Laborum, aspernatur officiis? Nisi iste, iure asperiores atque provident esse placeat culpa, vero nobis in facere aperiam dolore ipsam harum, qui rerum?!</span></p><p>Some initial <strong>bold</strong> text</p><p><br></p> -->
                         </div>
 
                         <!-- <a href="#" class="btn btn-primary">Button</a> -->
                     </div>
-                    <div class="card-footer text-muted">FECHA</div>
+                    <div class="card-footer text-muted"><%= pregunta.fecha %> </div>
                 </div>
             </div>
         </div>
@@ -63,12 +64,13 @@
 
         <h2 class="text-start">Respuestas:</h2>
         <!--  -->
-        <% if (id > 0) { %>
-            <% for( let index = 0; index < id; index++ ) { %>
-                <%- include('../partials/comentarios', {sesion}) %> 
-            <% } %>
+        <% if (comentarios.length > 0) { %>
+            <% comentarios.forEach(comentario => { %>
+                <%- include('../partials/comentarios', {sesion, comentario}) %> 
+            <% }) %>
         <% } else { %>
-                <h2>No hay nada</h2>
+                <!-- CONSTRUIR ALGO PARA CUANDO NO HAY COMENTARIOS -->
+                <h3>Aun no hay respuestas...</h3>
             
         <% } %>
         

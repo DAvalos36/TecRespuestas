@@ -1,13 +1,13 @@
-<div class="card mb-3 rounded-0  ">
+<div class="card mb-3 rounded-0" id="<%= comentario.id %> ">
     <div class="card-header py-2 px-3  rounded-0">
       <div class="row">
         <div class="col-6 col-sm-9 ">
-          <span class="badge rounded-pill bg-info text-white">David Octavio Avalos Loya <!-- AQUI IRA el nombre de la persona--> </span>
+          <span class="badge rounded-pill bg-info text-white"><%= comentario.nombre %>  <!-- AQUI IRA el nombre de la persona--> </span>
         </div>
         <div class="col-6 col-sm-3">
           <div class="row">
             <div class="col-4 me-0 text-end">
-              <span class="badge badge-primary">16</span>
+              <span class="badge badge-primary">Correcta</span>
             </div>
             <div class="col-4 ">
               <button type="button" class="btn btn-primary btn-floating">
@@ -15,7 +15,7 @@
               </button>
             </div>
             <div class="col-4">
-              <% if (sesion.rango == 2) { %>
+              <% if (sesion.rango == 2 || sesion.usid == comentario.id_propietario) { %>
                 <button type="button" class="btn btn-danger btn-floating">
                   <i class="fas fa-trash-alt"></i>
                 </button>
@@ -27,6 +27,6 @@
       </div>
     </div>
     <div class="card-body">
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+      <p class="card-text"><%= comentario.comentario %> </p>
     </div>
   </div>
