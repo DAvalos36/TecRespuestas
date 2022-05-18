@@ -22,12 +22,15 @@ router.post('/', validator.body(esquemaPregunta),(req,res) => {
     console.log(req.body);
     if (req.session.usid !== undefined){
         pool.getConnection().then(conn => {
-            conn.query('INSERT INTO publicaciones VALUES (?, ?, ?, ?, ?)', [null,req.body.titulo, req.body.contenido, null, req.session.usid]).then(r => {
+            let fecha = Date.now();
+            conn.query('INSERT INTO publicaciones VALUES (?, ?, ?, FROM_UNIXTIME(? /1000), ?)', [null,req.body.titulo, req.body.contenido, fecha, req.session.usid]).then(r => {
               res.json({msj: "Todo bien"});
-            });
+            }).catch(err => {
+                res.json({msj: "Ocurrio un error!"});
+            })
             conn.end();
           }).catch(err => {
-              res.status(400).json({msj: "Algo salio mal!"})
+              res.status(500).json({msj: "Base de datos no conectada...", error: err})
           })
     }
     else {
@@ -35,9 +38,18 @@ router.post('/', validator.body(esquemaPregunta),(req,res) => {
     }
 
 })
-router.delete('/', (req, res) => {
+router.get('/borrar/:id', (req, res) => {
     if (req.session.usid !== undefined) {
-
+        pool.getConnection().then(conn => {
+            let id = parseInt(req.params.id);
+            conn.query("borrar_pregunta(?,?)", [id, req.session.usid]).then(r=>{
+                res.json({msj: "TODO SALIO BIEN UWU", r});
+            }).catch(err =>{
+                res.json({msj: "ERROR UNU", error: err});
+            });
+        }).catch(err => {
+            res.status(500).json({msj: "Problema con la base de datos", error: err})
+        })
     }
     else {
 
