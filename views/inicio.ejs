@@ -31,10 +31,14 @@
             <%- include('../partials/alertaInicioSesion', {mensaje: "Inicie Sesion Para Crear Una Pregunta."}) %> 
         <% } %>
         
-        
-        <% for( let index = 1; index < 88; index++ ) { %>
-            <%- include('../partials/preguntaInicio', {index:index}) %> 
+        <% if (r.length > 0) { %>
+            <% r.forEach(element => { %>
+                <%- include('../partials/preguntaInicio', {id_publicacion: element.id_publicacion, nombre: element.nombre, fecha: element.fecha, titulo: element.titulo, comentarios: element.num_comentarios }) %> 
+            <% }) %>
+        <% } else { %>
+            <h3>No hay preguntas... UnU</h3>
         <% } %>
+
     </div>
 </body>
 
