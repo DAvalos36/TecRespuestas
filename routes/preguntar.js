@@ -1,4 +1,5 @@
 var express = require('express');
+const session = require('express-session');
 const Joi = require("joi");
 var router = express.Router();
 let pool  =  require('../db/config.js');
@@ -38,21 +39,40 @@ router.post('/', validator.body(esquemaPregunta),(req,res) => {
     }
 
 })
-router.get('/borrar/:id', (req, res) => {
+router.delete('/', (req, res) => {
     if (req.session.usid !== undefined) {
         pool.getConnection().then(conn => {
-            let id = parseInt(req.params.id);
-            conn.query("borrar_pregunta(?,?)", [id, req.session.usid]).then(r=>{
-                res.json({msj: "TODO SALIO BIEN UWU", r});
+            let id = parseInt(req.body.id);
+            conn.query("SELECT publicaciones.id, publicaciones.id_propietario FROM publicaciones WHERE publicaciones.id = ?", [id]).then(r=>{
+                if(r.length === 1){
+                    let id_propietario = r[0].id_propietario;
+                    if(req.session.usid == id_propietario || req.session.rango == 2){
+                        conn.query("DELETE FROM publicaciones WHERE publicaciones.id = ?", [id]).then(fn => {
+                            conn.query("DELETE FROM publicaciones_aprobadas WHERE publicaciones_aprobadas.id_publicacion = ?", [id]).then(fn2 => {
+                            }).catch(err => {    
+                            })
+                            res.json({msj: "TODOD BIE"});
+                        }).catch(err => {
+                            res.json({error: err});
+                        })
+                    }
+                    else{
+                        res.status(400).json({msj: "No tienes permiso para hacer esto!"});
+                    }
+                }
+                else {
+                    res.json({msj: "La pregunta no existe"});
+                }
             }).catch(err =>{
                 res.json({msj: "ERROR UNU", error: err});
             });
+            conn.end();
         }).catch(err => {
             res.status(500).json({msj: "Problema con la base de datos", error: err})
         })
     }
     else {
-
+        res.redirect("/inicio");
     }
 })
 
