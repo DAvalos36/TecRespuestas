@@ -18,40 +18,41 @@
 
 <body style="background-color: #f4f5f9;">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.11.0/mdb.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/javascripts/notiflix-aio.js"></script>
+    <script src="/javascripts/administrar.js"></script>
+
     <%- include('../partials/navbar') %> 
     <div class="container px-sm-0" >
-        <% for( let index = 0; index < 88; index++ ) { %>
-            
-        
+
+      <% publicaciones.forEach(publi => { %>
         <div class="accordion" id="accordionPanelsStayOpenExample">
             <div class="accordion-item my-2">
               <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-mdb-toggle="collapse"
-                  data-mdb-target="#panelsStayOpen-collapseOne<%-index%> " aria-expanded="true" aria-controls="panelsStayOpen-collapseOne<%-index%>">
+                  data-mdb-target="#panelsStayOpen-collapseOne<%=publi.id%> " aria-expanded="true" aria-controls="panelsStayOpen-collapseOne<%=publi.id%>">
                   <div class="row">
                       <div class="col-12">
-                            Titulo
+                            <%= publi.titulo %> 
                       </div>
                   </div>
                 </button>
               </h2>
-              <div id="panelsStayOpen-collapseOne<%-index%>" class="accordion-collapse collapse" aria-labelledby="headingOne">
+              <div id="panelsStayOpen-collapseOne<%=publi.id%>" class="accordion-collapse collapse" aria-labelledby="headingOne">
                 <div class="accordion-body">
-                  Texto de pregunta!
-
+                  <%- publi.contenido %> 
                   <div class="row">
                       <div class="col-12 text-center">
-                        <span class="badge rounded-pill bg-info mb-3">David Octavio Avalos Loya</span>
+                        <span class="badge rounded-pill bg-info mb-3"><%= publi.nombre %> </span>
                       </div>
                       <div class="col-12 text-center">
-                        <button class="btn border border-success">
+                        <button class="btn border border-success" title="Aprobar" onclick="aprobar(<%= publi.id%>, <%= publi.id_propietario%>)">
                             <i class="fas fa-check-circle"></i>
                         </button>
-                        <button class="btn border border-primary">
+                        <button class="btn border border-warning" title="Denegar" onclick="denegar(<%= publi.id%>, <%= publi.id_propietario%>)">
                             <i class="fas fa-minus-circle"></i>
                         </button>
-                        <button class="btn border border-danger">
+                        <button class="btn border border-danger" title="Bloquear usuario" onclick="bloquearUsuario(<%= publi.id%>, <%= publi.id_propietario%>)">
                             <i class="fas fa-ban"></i>
                         </button>
                       </div>
@@ -60,8 +61,9 @@
               </div>
             </div>
         </div>
-        <% } %>
+        <% }) %>
     </div>
+    
 </body>
 
 </html>
