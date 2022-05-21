@@ -20,7 +20,9 @@
 
 <body style="background-color: #f4f5f9;">
 
-    <%- include('../partials/navbar') %> 
+    <%- include('../partials/navbar') %>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/javascripts/notiflix-aio.js"></script>
 
     <div class="container px-sm-0">
 <!-- Publicacion -->
@@ -48,14 +50,16 @@
         <!--  -->
         <div class="responder my-3 p-3">
             <% if (sesion.usid !== undefined) { %>
-                <div class="row">
-                    <div class="col-12 col-lg-8">
-                        <input type="text" name="respuesta" id="" class="form-control form-control-lg w-100" placeholder="Escribe tu respuesta aqui">
+                <form action="" method="post" onsubmit="comentar(event, this)">
+                    <div class="row">
+                        <div class="col-12 col-lg-8">
+                            <input type="text" name="respuesta" id="" class="form-control form-control-lg w-100" placeholder="Escribe tu respuesta aqui" minlength="1" required>
+                        </div>
+                        <div class="col-12 col-lg-4 mt-sm-3">
+                            <button class="w-100 btn btn-primary mt-lg-2 ml-l-0">Enviar!</button>
+                        </div>
                     </div>
-                    <div class="col-12 col-lg-4">
-                        <button class="w-100 btn btn-primary mt-lg-2 ml-l-0">Enviar!</button>
-                    </div>
-                </div>
+                </form>
             <% } else { %>
                 <%- include('../partials/alertaInicioSesion', {mensaje: "¡No puede responder sin iniciar sesion!"}) %>
             <% } %>
@@ -75,6 +79,7 @@
         <% } %>
         
       </div>
+      <script src="/javascripts/responder.js"></script>
 </body>
 
 </html>
