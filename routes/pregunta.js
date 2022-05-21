@@ -10,6 +10,10 @@ const esquemaId = Joi.object({
     id: Joi.number().min(1).required()
 })
 
+const esquemaComentario = Joi.object({
+    comentario: Joi.string().min(1).required()
+})
+
 /* GET users listing. */
 router.get('/',function(req, res, next) {
     res.redirect("/");
@@ -37,5 +41,23 @@ router.get('/:id', validator.params(esquemaId),function(req, res, next) {
     });
 });
 
+router.post('/:id/responder', validator.params(esquemaId), validator.body(esquemaComentario), function(req, res, next) {
+    if(req.session.usid !== null){
+        let fecha = Date.now();
+        pool.getConnection().then(conn => {
+            conn.query("INSERT INTO comentarios(comentario, id_propietario, fecha_comentado, id_publi) VALUES (?,?,FROM_UNIXTIME(? /1000),?)", [req.body.comentario,req.session.usid,fecha,req.params.id]).then(r => {
+                res.end();  
+            }).catch(err =>{
+                res.status(400).json({msj: "Ocurrio un error al realizar la consulta.", error:err});
+            });
+            conn.end();
+        }).catch(err => {
+            res.status(500).json({msj: "Base de datos no conectada", error: err});
+        });  
+    }
+    else{
+        res.status(401).json({msj:"No tienes permisos para hacer esto"});
+    }
+});
 
 module.exports = router;
