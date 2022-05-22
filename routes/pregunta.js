@@ -93,4 +93,37 @@ router.delete("/:id/borrar", (req, res) => {
     }
 });
 
+
+router.put("/:id/votar", (req, res) => {
+    if(req.session.usid != null){
+        pool.getConnection().then(conn => {
+            conn.query("SELECT comentarios.id, comentarios.comentario, comentarios.correcta, comentarios.id_propietario, comentarios.fecha_comentado, comentarios.id_publi, publicaciones.id_propietario AS id_pro_publi FROM comentarios INNER JOIN publicaciones ON publicaciones.id = comentarios.id_publi WHERE comentarios.id = ?", [req.body.idRes]).then(r => {
+                if (r.length === 1){
+                    if(r[0].id_pro_publi == req.session.usid || req.session.rango == 2){
+                        conn.query("UPDATE comentarios SET correcta = 1 WHERE comentarios.id = ?", [req.body.idRes]).then(r2=>{
+                            res.end();
+                        }).catch(err => {
+                            res.status(400).json({msj: "Ocurrio un error"});
+                        })
+                    }
+                    else{
+                        res.status(401).json({msj: "No tienes permiso de hacer esto"});
+                    }
+                }
+                else {
+                    res.status(400).json({msj: "La pregunta no existe"});   
+                }
+            }).catch(err => {
+                res.status(400).json({msj: "Ocurrio un error", error: err});
+            })
+            conn.end();
+        }).catch(err => {
+            res.status(500).json({msj: "Hubo error al conectar con la base de datos", error: err});
+        });
+    }
+    else{
+        res.status(401).json({msj: "No tienes permiso de estar aqui"});
+    }
+});
+
 module.exports = router;

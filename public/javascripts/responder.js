@@ -12,7 +12,7 @@ const comentar = (e, f) => {
             Notiflix.Loading.remove();
             Notiflix.Report.success(
                 '¡Todo bien!',
-                'Comentario agregado correctamente',
+                'Respuesta agregada correctamente',
                 'Entendido!',
                 () => {
                     location.reload();
@@ -46,7 +46,7 @@ const borrarComentario = (id) => {
             Notiflix.Loading.remove();
             Notiflix.Report.success(
                 '¡Todo bien!',
-                'Comentario Eliminado correctamente',
+                'Comentario eliminado correctamente',
                 'Entendido!',
                 () => {
                     location.reload();
@@ -63,6 +63,41 @@ const borrarComentario = (id) => {
         else if (respuesta.status == 400){ 
             Notiflix.Loading.remove()
             Notiflix.Report.failure('Error', "Ocurrio un error al eliminar su comentario, intentelo mas tarde", "Entendido!");
+        }
+        else {
+            Notiflix.Loading.remove()
+            Notiflix.Notify.failure("Ocurrio un error inesperado");
+        }
+    });
+}
+
+const votar = (id) => {
+    const data = {idRes: id};
+    const destino = window.location.href + "/votar";
+    console.log("Votar: ", id);
+    axios.put(destino, data, {withCredentials: true }).then(r => {        
+        console.log(r)
+        if(r.status == 200){
+            Notiflix.Loading.remove();
+            Notiflix.Report.success(
+                '¡Todo bien!',
+                'Comentario seleccionado como utili correctamente',
+                'Entendido!',
+                () => {
+                    location.reload();
+                }
+                );
+            // window.location.href = "/inicio";
+        }
+    }).catch(err => {
+        const respuesta = err.response;
+        if (respuesta.status == 401){ 
+            Notiflix.Loading.remove()
+            Notiflix.Notify.failure('Necesitas iniciar sesion para hacer esto.');
+        }
+        else if (respuesta.status == 400){ 
+            Notiflix.Loading.remove()
+            Notiflix.Report.failure('Error', "Ocurrio un error al seleccionar este comentario, intentelo mas tarde", "Entendido!");
         }
         else {
             Notiflix.Loading.remove()

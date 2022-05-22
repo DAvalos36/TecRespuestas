@@ -23,7 +23,7 @@ const borrarPregunta = (id) => {
         }
         else if (respuesta.status == 400){ 
             Notiflix.Loading.remove()
-            Notiflix.Report.failure('Error', "Ocurrio un error con su comentario, intentelo mas tarde", "Entendido!");
+            Notiflix.Report.failure('Error', "Ocurrio un error al intentar eliminar la publicacion, intentelo mas tarde", "Entendido!");
         }
         else {
             Notiflix.Loading.remove()

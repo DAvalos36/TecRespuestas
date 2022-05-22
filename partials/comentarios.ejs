@@ -12,8 +12,8 @@
               <% } %>
             </div>
             <div class="col-4 ">
-              <% if (sesion.usid == idPropietario) { %>
-                <button type="button" class="btn btn-primary btn-floating">
+              <% if (sesion.usid == idPropietario && comentario.correcta !== 1) { %>
+                <button type="button" class="btn btn-primary btn-floating" onclick="votar(<%= comentario.id %> )">
                   <i class="fas fa-thumbs-up"></i>
                 </button>
               <% } %>
