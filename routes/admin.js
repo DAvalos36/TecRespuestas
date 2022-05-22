@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
   if(req.session.rango == 2){
     pool.getConnection().then(conn => {
       conn.query("SELECT A.id, A.titulo, A.contenido, CONCAT(U.nombre, ' ', U.apellido) as nombre , A.id_propietario FROM publicaciones A LEFT JOIN publicaciones_aprobadas B ON A.id = B.id_publicacion INNER JOIN usuarios U ON U.id = A.id_propietario WHERE B.id IS NULL").then(r => {
-        res.render("administrador", {publicaciones: r});
+        res.render("administrador", {publicaciones: r, sesion: req.session});
       }).catch(err => {
         // CONTRUIR PAGINA PARA ESTO
         console.log(err);

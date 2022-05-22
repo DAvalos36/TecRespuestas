@@ -13,7 +13,7 @@ const esquemaPregunta = Joi.object({
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     if(req.session.usid !== undefined){
-        res.render('nuevapreg');
+        res.render('nuevapreg', {sesion: req.session});
     }
     else {
         res.redirect("/sesiones");

@@ -12,20 +12,31 @@
           </a>
         </li>
         <li class="nav-item me-3 me-lg-0">
-          <a class="nav-link text-light" href="#">
-            <i class="fas fa-wrench  fa-lg"></i>
-          </a>
-        </li>
-        <li class="nav-item me-3 me-lg-0">
-          <a class="nav-link text-light" href="#">
-            <i class="fas fa-search  fa-lg"></i>
-          </a>
-        </li>
-        <li class="nav-item me-3 me-lg-0">
           <a class="nav-link text-light" href="/recorrido">
             <i class="fas fa-street-view  fa-lg"></i>
           </a>
         </li>
+        <% if (sesion.usid === undefined) { %>
+          <li class="nav-item me-3 me-lg-0">
+            <a class="nav-link text-light" href="/sesiones">
+              <i class="fas fa-sign-in-alt fa-lg"></i>
+            </a>
+          </li>
+        <% } else { %>
+          <li class="nav-item me-3 me-lg-0">
+            <a class="nav-link text-light" href="/sesiones/cerrar">
+              <i class="fas fa-door-closed fa-lg"></i>
+            </a>
+          </li>
+        <% } %>
+        <% if (sesion.rango == 2) { %>
+          <li class="nav-item me-3 me-lg-0">
+            <a class="nav-link text-light" href="/administrar">
+              <i class="fas fa-user-shield fa-lg"></i>
+            </a>
+          </li>     
+        <% } %>
+        
         <!-- Iconos dropdown -->
       </ul>
     </div>

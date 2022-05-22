@@ -21,7 +21,7 @@
     <!-- <script src="dist/notiflix-aio-X.X.X.min.js"></script> -->
     <script src="/javascripts/notiflix-aio.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <%- include('../partials/navbar') %> 
+    <%- include('../partials/navbar', {sesion}) %> 
     <div class="container px-sm-0" >
         <% if (sesion.usid !== undefined) { %>
             <div class="row">
