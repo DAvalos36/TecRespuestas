@@ -7,16 +7,20 @@
         <div class="col-6 col-sm-3">
           <div class="row">
             <div class="col-4 me-0 text-end">
-              <span class="badge badge-primary">Correcta</span>
+              <% if (comentario.correcta == 1) { %>
+                <span class="badge badge-primary">Correcta</span>
+              <% } %>
             </div>
             <div class="col-4 ">
-              <button type="button" class="btn btn-primary btn-floating">
-                <i class="fas fa-thumbs-up"></i>
-              </button>
+              <% if (sesion.usid == idPropietario) { %>
+                <button type="button" class="btn btn-primary btn-floating">
+                  <i class="fas fa-thumbs-up"></i>
+                </button>
+              <% } %>
             </div>
             <div class="col-4">
               <% if (sesion.rango == 2 || sesion.usid == comentario.id_propietario) { %>
-                <button type="button" class="btn btn-danger btn-floating">
+                <button type="button" class="btn btn-danger btn-floating" onclick="borrarComentario(<%= comentario.id %>) " >
                   <i class="fas fa-trash-alt"></i>
                 </button>
               <% } %>

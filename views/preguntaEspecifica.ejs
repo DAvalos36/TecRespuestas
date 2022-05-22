@@ -70,7 +70,7 @@
         <!--  -->
         <% if (comentarios.length > 0) { %>
             <% comentarios.forEach(comentario => { %>
-                <%- include('../partials/comentarios', {sesion, comentario}) %> 
+                <%- include('../partials/comentarios', {sesion, comentario, id, idPropietario: pregunta.id_prop}) %> 
             <% }) %>
         <% } else { %>
                 <!-- CONSTRUIR ALGO PARA CUANDO NO HAY COMENTARIOS -->

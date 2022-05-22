@@ -20,9 +20,9 @@ router.get('/',function(req, res, next) {
 });
 router.get('/:id', validator.params(esquemaId),function(req, res, next) {
     pool.getConnection().then(conn => {
-        conn.query("SELECT publicaciones.id, publicaciones.titulo, publicaciones.contenido, publicaciones.fecha, CONCAT(usuarios.nombre, ' ', usuarios.apellido) AS nombre FROM publicaciones_aprobadas INNER JOIN publicaciones ON publicaciones.id = publicaciones_aprobadas.id_publicacion INNER JOIN usuarios ON usuarios.id = publicaciones.id_propietario WHERE publicaciones_aprobadas.id_publicacion = ?", [req.params.id]).then(r => {
+        conn.query("SELECT publicaciones.id, publicaciones.titulo, publicaciones.contenido, publicaciones.fecha, usuarios.id AS id_prop ,CONCAT(usuarios.nombre, ' ', usuarios.apellido) AS nombre FROM publicaciones_aprobadas INNER JOIN publicaciones ON publicaciones.id = publicaciones_aprobadas.id_publicacion INNER JOIN usuarios ON usuarios.id = publicaciones.id_propietario WHERE publicaciones_aprobadas.id_publicacion = ?", [req.params.id]).then(r => {
             if(r.length === 1){
-                conn.query("SELECT comentarios.id, comentarios.comentario, CONCAT(usuarios.nombre, ' ', usuarios.apellido) as nombre, comentarios.fecha_comentado, comentarios.id_propietario FROM comentarios INNER JOIN usuarios ON comentarios.id_propietario = usuarios.id WHERE comentarios.id_publi = ?", [req.params.id]).then(comentarios => {
+                conn.query("SELECT comentarios.id, comentarios.comentario, CONCAT(usuarios.nombre, ' ', usuarios.apellido) as nombre, comentarios.fecha_comentado, comentarios.id_propietario, comentarios.correcta FROM comentarios INNER JOIN usuarios ON comentarios.id_propietario = usuarios.id WHERE comentarios.id_publi = ? ORDER BY correcta DESC", [req.params.id]).then(comentarios => {
                     res.render('preguntaEspecifica', {id: req.params.id, sesion: req.session, pregunta: r[0], comentarios});
                 }).catch(err=>{
                     console.log("IDK");
@@ -57,6 +57,39 @@ router.post('/:id/responder', validator.params(esquemaId), validator.body(esquem
     }
     else{
         res.status(401).json({msj:"No tienes permisos para hacer esto"});
+    }
+});
+
+// Borrar Comentarios
+router.delete("/:id/borrar", (req, res) => {
+    if(req.session.usid != null){
+        pool.getConnection().then(conn => {
+            conn.query("SELECT id, comentario, correcta, id_propietario, fecha_comentado, id_publi FROM comentarios WHERE comentarios.id = ?", [req.body.idRes]).then(r => {
+                if (r.length === 1){
+                    if(r[0].id_propietario == req.session.usid || req.session.rango == 2){
+                        conn.query("DELETE FROM comentarios WHERE comentarios.id = ?", [req.body.idRes]).then(r2=>{
+                            res.end();
+                        }).catch(err => {
+                            res.status(400).json({msj: "Ocurrio un error"});
+                        })
+                    }
+                    else{
+                        res.status(401).json({msj: "No tienes permiso de hacer esto"});
+                    }
+                }
+                else {
+                    res.status(400).json({msj: "La pregunta no existe"});   
+                }
+            }).catch(err => {
+                res.status(400).json({msj: "Ocurrio un error", error: err});
+            })
+            conn.end();
+        }).catch(err => {
+            res.status(500).json({msj: "Hubo error al conectar con la base de datos", error: err});
+        });
+    }
+    else{
+        res.status(401).json({msj: "No tienes permiso de estar aqui"});
     }
 });
 

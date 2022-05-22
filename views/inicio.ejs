@@ -18,7 +18,9 @@
 </head>
 
 <body style="background-color: #f4f5f9;">
-    <script src="dist/notiflix-aio-X.X.X.min.js"></script>
+    <!-- <script src="dist/notiflix-aio-X.X.X.min.js"></script> -->
+    <script src="/javascripts/notiflix-aio.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <%- include('../partials/navbar') %> 
     <div class="container px-sm-0" >
         <% if (sesion.usid !== undefined) { %>
@@ -33,13 +35,14 @@
         
         <% if (r.length > 0) { %>
             <% r.forEach(element => { %>
-                <%- include('../partials/preguntaInicio', {id_publicacion: element.id_publicacion, nombre: element.nombre, fecha: element.fecha, titulo: element.titulo, comentarios: element.num_comentarios }) %> 
+                <%- include('../partials/preguntaInicio', {id_creador: element.id_creador, id_publicacion: element.id_publicacion, nombre: element.nombre, fecha: element.fecha, titulo: element.titulo, comentarios: element.num_comentarios, sesion }) %> 
             <% }) %>
         <% } else { %>
             <h3>No hay preguntas... UnU</h3>
         <% } %>
 
     </div>
+    <script src="/javascripts/inicio.js"></script>
 </body>
 
 </html>

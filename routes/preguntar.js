@@ -49,22 +49,24 @@ router.delete('/', (req, res) => {
                     if(req.session.usid == id_propietario || req.session.rango == 2){
                         conn.query("DELETE FROM publicaciones WHERE publicaciones.id = ?", [id]).then(fn => {
                             conn.query("DELETE FROM publicaciones_aprobadas WHERE publicaciones_aprobadas.id_publicacion = ?", [id]).then(fn2 => {
-                            }).catch(err => {    
+                                res.end();
+                            }).catch(err => {
+                                res.status(400);
                             })
                             res.json({msj: "TODOD BIE"});
                         }).catch(err => {
-                            res.json({error: err});
+                            res.status(400).json({msj: "Ha ocurrido un error", error: err});
                         })
                     }
                     else{
-                        res.status(400).json({msj: "No tienes permiso para hacer esto!"});
+                        res.status(401).json({msj: "No tienes permiso para hacer esto!"});
                     }
                 }
                 else {
                     res.json({msj: "La pregunta no existe"});
                 }
             }).catch(err =>{
-                res.json({msj: "ERROR UNU", error: err});
+                res.json({msj: "Error de consulta", error: err});
             });
             conn.end();
         }).catch(err => {
