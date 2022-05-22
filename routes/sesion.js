@@ -84,4 +84,9 @@ router.post('/crear', validator.body(esquemaRegistro),(req, res) => {
     });
 });
 
+router.get("/cerrar", (req, res) => {
+  req.session.destroy();
+  res.redirect("/sesiones");
+});
+
 module.exports = router;

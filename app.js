@@ -25,8 +25,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({secret: "CONTRA PERRONA 123" ,resave: true,
-saveUninitialized: true}));
+app.use(session({secret: "CONTRA PERRONA 123", resave: true,
+saveUninitialized: true, cookie: {maxAge: 1000 * 60 * 60 * 24}}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/sesiones', sesiones);
