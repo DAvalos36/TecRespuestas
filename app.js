@@ -5,6 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var session = require("express-session");
 var logger = require('morgan');
+require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var inicioRouter = require('./routes/inicioR');
@@ -25,7 +26,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({secret: "CONTRA PERRONA 123", resave: true,
+app.use(session({secret: process.env.SESION_SECRET, resave: true,
 saveUninitialized: true, cookie: {maxAge: 1000 * 60 * 60 * 24}}));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -42,10 +43,5 @@ app.use('/administrar', admin );
 
 
 app.use('/*', noEncontrada );
-// app.use('*', noEncontrada);
-
-// catch 404 and forward to error handler
-
-// error handler
 
 module.exports = app;
