@@ -5,6 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var session = require("express-session");
 var logger = require('morgan');
+const sequelize = require("./db/config.js");
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
@@ -43,5 +44,11 @@ app.use('/administrar', admin );
 
 
 app.use('/*', noEncontrada );
+
+sequelize.sync({force: true}).then(() => {
+    console.log("Database synced")
+}).catch((err) => {
+    console.log("*** OCURRIO UN ERROR ***", err)
+});
 
 module.exports = app;
