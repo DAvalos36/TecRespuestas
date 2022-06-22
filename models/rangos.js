@@ -13,8 +13,11 @@ const Rangos = sequelize.define("rangos", {
     }
 });
 
-Rangos.create({ id: 1, nombre: "Usuario" });
-Rangos.create({ id: 2, nombre: "Administrador" });
+Rangos.afterSync(() => {
+    console.log("Tabla rangos creada");
+    Rangos.create({ id: 1, nombre: "Usuario" });
+    Rangos.create({ id: 2, nombre: "Administrador" });
+});
 
 module.exports = Rangos;
 
