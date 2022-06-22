@@ -3,7 +3,7 @@ const sequelize = require("../db/config.js");
 
 const Rangos = sequelize.define("rangos", {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.TINYINT,
         primaryKey: true,
         autoIncrement: true
     },
@@ -15,6 +15,8 @@ const Rangos = sequelize.define("rangos", {
 
 Rangos.create({ id: 1, nombre: "Usuario" });
 Rangos.create({ id: 2, nombre: "Administrador" });
+
+module.exports = Rangos;
 
 
 

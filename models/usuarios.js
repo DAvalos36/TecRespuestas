@@ -27,7 +27,7 @@ const Usuarios = sequelize.define("usuarios", {
         type: DataTypes.STRING,
         allowNull: false
     },
-    rango: {
+    id_rango: {
         type: DataTypes.TINYINT,
         allowNull: false,
         defaultValue: 1,
@@ -43,7 +43,7 @@ Usuarios.hasMany(Publicaciones, { foreignKey: "id_propietario", sourceKey: "id" 
 Publicaciones.belongsTo(Usuarios, { foreignKey: "id_propietario", targetKey: "id" });
 Usuarios.hasMany(PublicacionesAprobadas, { foreignKey: "id_administrador", sourceKey: "id" });
 PublicacionesAprobadas.belongsTo(Usuarios, { foreignKey: "id_administrador", targetKey: "id" });
-Usuarios.belongsTo(Rangos, { foreignKey: "rango", targetKey: "id" });
-Rangos.hasOne(Usuarios, { foreignKey: "rango", sourceKey: "id" });
+Rangos.hasOne(Usuarios, { foreignKey: "id_rango", sourceKey: "id" });
+Usuarios.belongsTo(Rangos, { foreignKey: "id_rango", targetKey: "id" });
 
 module.exports = Usuarios;
