@@ -1,18 +1,18 @@
 var express = require('express');
+const sequelize = require('sequelize');
 var router = express.Router();
-let pool  =  require('../db/config.js');
+const Publicaciones = require("../models/publicaciones.js");
+const Usuarios = require("../models/usuarios.js");
+const PublicacionesAprobadas = require('../models/publicaciones_aprobadas.js');
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   if(req.session.rango == 2){
-    pool.getConnection().then(conn => {
-      conn.query("SELECT A.id, A.titulo, A.contenido, CONCAT(U.nombre, ' ', U.apellido) as nombre , A.id_propietario FROM publicaciones A LEFT JOIN publicaciones_aprobadas B ON A.id = B.id_publicacion INNER JOIN usuarios U ON U.id = A.id_propietario WHERE B.id IS NULL").then(r => {
-        res.render("administrador", {publicaciones: r, sesion: req.session});
-      }).catch(err => {
+    Publicaciones.findAll({include: [{model: PublicacionesAprobadas, required: false },
+      {model: Usuarios, attributes: {exclude: ["contrasena"]} } ],
+      where: sequelize.where(sequelize.col("publicaciones_aprobada.id"), "Is", null
+    ) }).then(Publicaciones => {
+        res.render("administrador", {publicaciones: Publicaciones, sesion: req.session});
         // CONTRUIR PAGINA PARA ESTO
-        console.log(err);
-        res.send("<h1> HUBO UN ERROR AL BUSCAR ESTO </h1>")
-      });
-      conn.end();
     }).catch(err => {
       res.status(500).json({msj: "Error al conectar con la base de datos", error: err});
     });
@@ -25,16 +25,11 @@ router.get('/', function(req, res, next) {
 router.post("/", (req, res) => {
   if (req.session.rango == 2){
     console.log(req.body);
-    let fecha = Date.now();
-    pool.getConnection().then(conn => {
-      conn.query("INSERT INTO publicaciones_aprobadas (id_publicacion, id_administrador, fecha_hora) VALUES ( ? , ? ,FROM_UNIXTIME( ?  /1000) )", [req.body.idPublicacion, req.session.usid, fecha]).then(r => {
-        res.end();
-      }).catch(err => {
-        res.status(400).json({msj: "Ocurrio un error inesperado, intentelo mas tarde", error: err});
-      });
-      conn.end();
+    const { idPublicacion } = req.body;
+    PublicacionesAprobadas.create({id_publicacion: idPublicacion, id_administrador: req.session.usid}).then(r => {
+      res.end();
     }).catch(err => {
-      res.status(500).json({msj: "Error con la base de datos", error: err});
+      res.status(400).json({msj: "Ocurrio un error inesperado, intentelo mas tarde", error: err});
     });
   }
   else {
@@ -43,20 +38,16 @@ router.post("/", (req, res) => {
 });
 router.put("/", (req, res) => {
   console.log(req.body);
+  const { idPublicacion, idUsuario } = req.body;
   if (req.session.rango == 2){
-    pool.getConnection().then(conn => {
-      conn.query("UPDATE usuarios SET usuarios.acceso = '0' WHERE usuarios.id = ?", [req.body.idUsuario]).then(r => {
-        conn.query("DELETE FROM publicaciones WHERE publicaciones.id = ?", [req.body.idPublicacion]).then(r2 => {
-          res.end();
-        }).catch(err => {
-          res.status(400).json({msj: "Las consultas no ocurrieron como debian", error: err});
-        });
+    Usuarios.update({rango: false}, {where: {id: idUsuario}}) .then(n => {
+      Publicaciones.destroy({where: {id: idPublicacion}}).then(r => {
+        res.end();
       }).catch(err => {
         res.status(400).json({msj: "Ocurrio un error inesperado, intentelo mas tarde", error: err});
       });
-      conn.end();
     }).catch(err => {
-      res.status(500).json({msj: "Error con la base de datos", error: err});
+      res.status(400).json({msj: "Ocurrio un error inesperado, intentelo mas tarde", error: err});
     });
   }
   else {
@@ -66,15 +57,11 @@ router.put("/", (req, res) => {
 router.delete("/", (req, res) => {
   if (req.session.rango == 2){
     console.log(req.body);
-    pool.getConnection().then(conn => {
-      conn.query("DELETE FROM publicaciones WHERE publicaciones.id = ?", [req.body.idPublicacion]).then(r => {
-        res.end();
-      }).catch(err => {
-        res.status(400).json({msj: "Ocurrio un error inesperado, intentelo mas tarde", error: err});
-      });
-      conn.end();
+    const { idPublicacion } = req.body;
+    Publicaciones.destroy({where: { id: idPublicacion}}).then(c => {
+      res.end();
     }).catch(err => {
-      res.status(500).json({msj: "Error con la base de datos", error: err});
+      res.status(400).json({msj: "Ocurrio un error inesperado, intentelo mas tarde", error: err});
     });
   }
   else {

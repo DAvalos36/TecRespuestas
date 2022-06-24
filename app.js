@@ -31,6 +31,12 @@ app.use(session({secret: process.env.SESION_SECRET, resave: true,
 saveUninitialized: true, cookie: {maxAge: 1000 * 60 * 60 * 24}}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+sequelize.sync().then(() => {
+    console.log("Database synced")
+}).catch((err) => {
+    console.log("*** OCURRIO UN ERROR ***", err)
+});
+
 app.use('/sesiones', sesiones);
 
 
@@ -45,10 +51,6 @@ app.use('/administrar', admin );
 
 app.use('/*', noEncontrada );
 
-sequelize.sync({force: true}).then(() => {
-    console.log("Database synced")
-}).catch((err) => {
-    console.log("*** OCURRIO UN ERROR ***", err)
-});
+
 
 module.exports = app;

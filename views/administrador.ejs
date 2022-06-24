@@ -47,7 +47,7 @@
                   <%- publi.contenido %> 
                   <div class="row">
                       <div class="col-12 text-center">
-                        <span class="badge rounded-pill bg-info mb-3"><%= publi.nombre %> </span>
+                        <span class="badge rounded-pill bg-info mb-3"><%= `${publi.usuario.nombre} ${publi.usuario.apellido}`  %> </span>
                       </div>
                       <div class="col-12 text-center">
                         <button class="btn border border-success" title="Aprobar" onclick="aprobar(<%= publi.id%>, <%= publi.id_propietario%>)">
