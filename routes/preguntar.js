@@ -3,6 +3,7 @@ const session = require('express-session');
 const Joi = require("joi");
 var router = express.Router();
 let pool  =  require('../db/config.js');
+const Publicaciones = require('../models/publicaciones.js');
 const validator = require('express-joi-validation').createValidator({});
 
 const esquemaPregunta = Joi.object({
@@ -19,26 +20,21 @@ router.get('/', function(req, res, next) {
         res.redirect("/sesiones");
     }
 });
-router.post('/', validator.body(esquemaPregunta),(req,res) => {
+router.post('/', validator.body(esquemaPregunta), (req,res) => {
     console.log(req.body);
+    const { titulo, contenido } = req.body;
     if (req.session.usid !== undefined){
-        pool.getConnection().then(conn => {
-            let fecha = Date.now();
-            conn.query('INSERT INTO publicaciones VALUES (?, ?, ?, FROM_UNIXTIME(? /1000), ?)', [null,req.body.titulo, req.body.contenido, fecha, req.session.usid]).then(r => {
-              res.json({msj: "Todo bien"});
-            }).catch(err => {
-                res.json({msj: "Ocurrio un error!"});
-            })
-            conn.end();
-          }).catch(err => {
-              res.status(500).json({msj: "Base de datos no conectada...", error: err})
-          })
+        Publicaciones.create({titulo, contenido, id_propietario: req.session.usid}).then(() => {
+            res.json({msj: "Todo bien"});
+        }).catch(err => {
+            res.json({msj: "Ocurrio un error!"});
+        });
     }
     else {
-        
+        res.status(401).json({msj: "No estas logueado!"});
     }
 
-})
+});
 router.delete('/', (req, res) => {
     if (req.session.usid !== undefined) {
         pool.getConnection().then(conn => {

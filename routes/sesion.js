@@ -1,7 +1,8 @@
 var express = require('express');
 const Joi = require("joi");
 const validator = require('express-joi-validation').createValidator({});
-let pool  =  require('../db/config.js');
+// let pool = require('../db/config.js');
+const Usuarios = require('../models/usuarios.js');
 const bcrypt = require('bcrypt');
 const { date } = require('joi');
 var router = express.Router();
@@ -24,64 +25,60 @@ const esquemaLogin = Joi.object({
 
 /* GET users listing. */
 router.get('/', (req, res) => {
-    res.render("sesiones");
+  res.render("sesiones");
 })
-router.post('/iniciar', validator.body(esquemaLogin),function(req, res, next) {
+router.post('/iniciar', validator.body(esquemaLogin), function (req, res, next) {
   console.log(req.body);
-  pool.getConnection().then(conn => {
-    conn.query('SELECT * FROM usuarios WHERE correo = ?',[req.body.correo]).then(r => {
-      // console.log(r);
-      if(r.length === 1){
-        console.log('SI HAY');
-        bcrypt.compare(req.body.pass, r[0].contrasena).then(resultado => {
-          if(resultado){
-            req.session.usid = r[0].id;
-            req.session.rango = r[0].rango;
+  const { correo, pass } = req.body;
+  Usuarios.findOne({where: {correo}}).then(usuario => {
+    if (usuario !== null) {
+      console.log('SI HAY');
+      if(usuario.acceso){
+        bcrypt.compare(pass, usuario.contrasena).then(resultado => {
+          if (resultado) {
+            req.session.usid = usuario.id;
+            req.session.rango = usuario.id_rango;
             res.end();
           }
-          else{
-            res.status(400).json({msj: "NO!!"});
+          else {
+            res.status(400).json({ msj: "NO!!" });
           }
         }).catch(err => {
           res.status(400).json(err);
         })
-        
       }
-      else {
-        console.log('NO | HAY')
-        res.status(400).json({msj: "NO!!"});
+      else{
+        res.status(401).json({ msj: "No tienes acceso!" });
       }
-    });
-    conn.end();
+    }
+    else {
+      // Correo no encontrado
+      console.log('NO | HAY')
+      res.status(400).json({ msj: "NO!!" });
+    }
   }).catch(err => {
     console.log(err);
-    res.status(500).json({msj: "Hubo un error con la base de datos!!"});
-  })
-  
+    res.status(500).json({ msj: "Hubo un error con la base de datos!!" });
+  });
 });
-router.post('/crear', validator.body(esquemaRegistro),(req, res) => {
-    console.log(req.body);
-    bcrypt.hash(req.body.pass,rounds).then(hash => {
-      pool.getConnection().then(conn => {
-        let fecha = Date.now();
-        conn.query('INSERT INTO usuarios VALUES (?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(? / 1000))', [null,req.body.nombre, req.body.apellido, req.body.correo, hash, 1, 1, fecha.toString()]).then(r => {
-          res.json({msj: "Todo bien"});
-          console.log(r);
-        }).catch(err => {
-          console.log(err);
-          if (err.code == 'ER_DUP_ENTRY'){
-            res.status(409).json({tipo: "error", msj:"Este usuario ya existe!"});
-          }
-          else{
-            res.status(400).json(err);
-          }
-        })
-        conn.end();
-      }).catch(err => {
-        console.log(err);
-        res.status(500).json({msj: "Hubo un error con la base de datos!!", error: err});
-      })
-    });
+
+router.post('/crear', validator.body(esquemaRegistro), (req, res) => {
+  console.log(req.body);
+  const { correo, nombre, apellido, pass } = req.body;
+  bcrypt.hash(pass, rounds).then(hash => {
+    return Usuarios.create({ nombre, apellido, correo, contrasena: hash, rango: 1, acceso: true });
+  }).then(r => {
+    res.json({ msj: "Todo bien" });
+    console.log(r);
+  }).catch(err => {
+    console.log(err);
+    if (err.errors[0].type === "unique violation") {
+      res.status(409).json({ tipo: "error", msj: "Este usuario ya existe!" });
+    }
+    else {
+      res.status(400).json(err);
+    }
+  })
 });
 
 router.get("/cerrar", (req, res) => {

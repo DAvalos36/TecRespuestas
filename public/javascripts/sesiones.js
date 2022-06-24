@@ -24,6 +24,10 @@ const iniciar = (e, f) => {
                 Notiflix.Loading.remove()
                 Notiflix.Notify.failure('Usuario o contraseña incorrectos!');
             }
+            else if (respuesta.status == 401){ 
+                Notiflix.Loading.remove()
+                Notiflix.Notify.failure('Este usuario se encuentra bloqueado!');
+            }
         })
     }
 
@@ -52,6 +56,7 @@ const crear = (e,f) =>{
             }
         }).catch(err => {
             const respuesta = err.response;
+            console.log(respuesta);
             if (respuesta.status == 409){
                 Notiflix.Loading.remove()
                 Notiflix.Report.failure("Error al registrarse", '¡Este correo ya se encuentra registrado!', "Ok");
